@@ -16,7 +16,7 @@ Sabacc de Kessel est un jeu de cartes en ligne inspiré de l'univers de Star War
 
 ## Aperçu
 
-![Capture d'écran du jeu](https://your-image-link-here.com/screenshot.png)
+![Capture d'écran du jeu](https://image.noelshack.com/fichiers/2024/35/6/1725099402-capture-ecran-sabacc-kessel.png)
 
 ## Installation
 
