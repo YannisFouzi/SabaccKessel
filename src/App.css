@@ -1,5 +1,15 @@
 /* src/App.css */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap');
+@font-face {
+  font-family: 'Star Jedi';
+  src: url('./starjedi/Starjhol.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+h1 {
+  font-family: 'Star Jedi', sans-serif;
+}
 
 :root {
   --primary-color: #3498db;
@@ -22,8 +32,20 @@ body {
   padding: 20px;
 }
 
-h1, h2, h3 {
+h1 {
+  color : white;
+  font-size: 5em;
+}
+
+h2, h3 {
   color: var(--primary-color);
+}
+
+
+
+.game-status h2, 
+.game-status h3 {
+  color: white;
 }
 
 .App {
@@ -225,7 +247,9 @@ h1, h2, h3 {
 }
 
 .game-status {
-  background-color: var(--secondary-color);
+ background-image: url('./img/hyperspace.jpg');
+  background-size: cover; /* Pour que l'image couvre toute la surface */
+  background-position: center; /* Pour centrer l'image */
   color: white;
   padding: 10px 20px;
   border-radius: var(--border-radius);

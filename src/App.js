@@ -3,6 +3,7 @@ import PlayerHand from './PlayerHand';
 import GameBoard from './GameBoard';
 import GameStatus from './GameStatus';
 import RulesModal from './RulesModal';
+import Background from './Background';
 import './App.css';
 
 const generateDeck = () => {
@@ -458,6 +459,7 @@ const App = () => {
   }
   return (
     <div className="App">
+      <Background />
       <h1>Sabacc de Kessel</h1>
       <button className="rules-button" onClick={() => setIsRulesModalOpen(true)}>
         Règles du jeu
