@@ -14,6 +14,14 @@ Sabacc de Kessel est un jeu de cartes en ligne inspiré de l'univers de Star War
 - **Différents types de cartes** : Sable, sang, imposteur, et sylop.
 - **Déploiement continu** : Déployé automatiquement sur Vercel à chaque modification.
 
+## Fonctionnalités à venir
+
+- Mise à jour de la fonctionnalité de l'imposteur (dés)
+- Choix du nombre de jetons
+- Cacher le jeu des joueurs qui ne jouent pas
+- Ajout d'un mode solo où il jouera contre 3 bots
+- Ajout de jokers
+
 ## Aperçu
 
 ![Capture d'écran du jeu](https://image.noelshack.com/fichiers/2024/35/6/1725099402-capture-ecran-sabacc-kessel.png)
