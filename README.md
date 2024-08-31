@@ -1,72 +1,67 @@
-https://sabacc.fouzi-dev.fr/
 
-# Getting Started with Create React App
+# Sabacc de Kessel
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Deploy with Vercel**: [https://sabacc.fouzi-dev.fr/](https://sabacc.fouzi-dev.fr/)
 
-## Available Scripts
+## Description
 
-In the project directory, you can run:
+Sabacc de Kessel est un jeu de cartes en ligne inspiré de l'univers de Star Wars. Ce projet est développé en React et utilise Vercel pour le déploiement continu. Le but du jeu est de réduire la valeur de votre main pour obtenir une paire parfaite de Sabacc, ou avoir la meilleure main après trois tours.
 
-### `npm start`
+## Fonctionnalités
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Multi-joueurs** : Le jeu peut être joué par 4 joueurs, avec 3 joueurs simulés par l'ordinateur. (Pour le moment aucun jeu n'est caché)
+- **Gestion des jetons** : Les joueurs misent des jetons pour piocher des cartes et améliorer leurs mains. (Pour le moment les jetons sont fixés à 6)
+- **Différents types de cartes** : Sable, sang, imposteur, et sylop.
+- **Déploiement continu** : Déployé automatiquement sur Vercel à chaque modification.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Aperçu
 
-### `npm test`
+![Capture d'écran du jeu](https://your-image-link-here.com/screenshot.png)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Installation
 
-### `npm run build`
+Pour exécuter ce projet localement, suivez ces étapes :
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Clonez le dépôt :
+   ```bash
+   git clone https://github.com/YannisFouzi/SabaccKessel.git
+   ```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+2. Accédez au répertoire du projet :
+   ```bash
+   cd SabaccKessel
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+3. Installez les dépendances :
+   ```bash
+   npm install
+   ```
 
-### `npm run eject`
+4. Exécutez l'application en mode développement :
+   ```bash
+   npm start
+   ```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+   Ouvrez [http://localhost:3000](http://localhost:3000) pour voir l'application dans votre navigateur.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Déploiement
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+Ce projet est déployé en continu sur [Vercel](https://vercel.com). Chaque commit poussé sur la branche `master` déclenche un nouveau déploiement.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Technologies Utilisées
 
-## Learn More
+- **React** - Pour la construction de l'interface utilisateur.
+- **Vercel** - Pour le déploiement et l'hébergement.
+- **GitHub** - Pour la gestion du code source.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Contribuer
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Les contributions sont les bienvenues ! Si vous souhaitez améliorer ce projet ou corriger des bugs, n'hésitez pas à soumettre une pull request.
 
-### Code Splitting
+## Auteur
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- **Yannis Fouzi** - [GitHub](https://github.com/YannisFouzi)
 
-### Analyzing the Bundle Size
+## Licence
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
