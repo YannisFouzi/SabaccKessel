@@ -52,8 +52,6 @@ h2, h3 {
   text-align: center;
   padding: 20px;
   font-family: Arial, sans-serif;
-  position: relative;
-  z-index: 10;
 }
 
 .game-board {
@@ -104,11 +102,6 @@ h2, h3 {
   gap: 20px;
   justify-content: center;
   margin-top: 30px;
-}
-
-.game-board, .players {
-  position: relative;
-  z-index: 10;
 }
 
 
@@ -446,12 +439,8 @@ h2, h3 {
 }
 
 @media (max-width: 768px) {
-  body, html {
-    overflow: visible; /* assurez-vous que le contenu est visible */
-}
   .deck-piles {
     flex-direction: column;
-    z-index: 1;
   }
 
   .players {
@@ -472,4 +461,9 @@ h2, h3 {
     width: 100%;
     max-width: 400px;
   }
+}
+
+.App, .game-board, .game-status, .player-hand {
+  position: relative;
+  z-index: 1;
 }
