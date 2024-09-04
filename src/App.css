@@ -439,8 +439,12 @@ h2, h3 {
 }
 
 @media (max-width: 768px) {
+  body, html {
+    overflow: visible; /* assurez-vous que le contenu est visible */
+}
   .deck-piles {
     flex-direction: column;
+    z-index: 1;
   }
 
   .players {
@@ -461,7 +465,4 @@ h2, h3 {
     width: 100%;
     max-width: 400px;
   }
-  #background-container {
-    z-index: -10;
-}
 }
