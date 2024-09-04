@@ -470,4 +470,12 @@ html, body {
     color: #b0926b;
     z-index: 8;
   }
+
+  @media (max-width: 768px) {
+    body {
+      opacity: 1 !important; /* Désactiver l'animation sur mobile */
+      transition: none !important; /* Supprime la transition pour une application immédiate */
+    }
+  }
+  
   

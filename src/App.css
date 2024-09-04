@@ -462,8 +462,3 @@ h2, h3 {
     max-width: 400px;
   }
 }
-
-.App, .game-board, .game-status, .player-hand {
-  position: relative;
-  z-index: 1;
-}
