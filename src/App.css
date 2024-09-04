@@ -461,4 +461,7 @@ h2, h3 {
     width: 100%;
     max-width: 400px;
   }
+  #background-container {
+    z-index: -10;
+}
 }
