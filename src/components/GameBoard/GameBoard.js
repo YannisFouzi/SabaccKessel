@@ -1,12 +1,16 @@
-import React from 'react';
-import Card from './Card';
-import dos from './img/dos.png';
+import React from "react";
+import dos from "../../assets/img/dos.png";
+import Card from "../Card/Card";
+import "./GameBoard.css";
 
 const GameBoard = ({ deck, handlePileClick }) => {
   return (
     <div className="game-board">
       <div className="deck-piles">
-        <div className="deck-pile" onClick={() => handlePileClick('sandVisible')}>
+        <div
+          className="deck-pile"
+          onClick={() => handlePileClick("sandVisible")}
+        >
           <h4>Pile Sable Visible</h4>
           {deck.sandVisible.length > 0 ? (
             <Card card={deck.sandVisible[deck.sandVisible.length - 1]} />
@@ -14,11 +18,17 @@ const GameBoard = ({ deck, handlePileClick }) => {
             <div>Aucune carte visible</div>
           )}
         </div>
-        <div className="deck-pile" onClick={() => handlePileClick('sandInvisible')}>
+        <div
+          className="deck-pile"
+          onClick={() => handlePileClick("sandInvisible")}
+        >
           <h4>Pile Sable Invisible</h4>
           <img src={dos} alt="dos de carte" />
         </div>
-        <div className="deck-pile" onClick={() => handlePileClick('bloodVisible')}>
+        <div
+          className="deck-pile"
+          onClick={() => handlePileClick("bloodVisible")}
+        >
           <h4>Pile Sang Visible</h4>
           {deck.bloodVisible.length > 0 ? (
             <Card card={deck.bloodVisible[deck.bloodVisible.length - 1]} />
@@ -26,7 +36,10 @@ const GameBoard = ({ deck, handlePileClick }) => {
             <div>Aucune carte visible</div>
           )}
         </div>
-        <div className="deck-pile" onClick={() => handlePileClick('bloodInvisible')}>
+        <div
+          className="deck-pile"
+          onClick={() => handlePileClick("bloodInvisible")}
+        >
           <h4>Pile Sang Invisible</h4>
           <img src={dos} alt="dos de carte" />
         </div>

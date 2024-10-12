@@ -1,0 +1,121 @@
+/* src/App.css */
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap");
+@font-face {
+  font-family: "Star Jedi";
+  src: url("../assets/starjedi/Starjhol.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+h1 {
+  font-family: "Star Jedi", sans-serif;
+}
+
+:root {
+  --primary-color: #3498db;
+  --secondary-color: #2ecc71;
+  --background-color: #f0f3f5;
+  --card-background: #ffffff;
+  --text-color: #333333;
+  --border-radius: 12px;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  font-family: "Roboto", sans-serif;
+}
+
+.App {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: white;
+  font-size: 5em;
+}
+
+h2,
+h3 {
+  color: var(--primary-color);
+}
+
+.players-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.current-player {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+}
+
+.other-players {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: 100%;
+}
+
+.other-players .player-hand {
+  flex: 1 1 calc(33.333% - 20px);
+  max-width: 300px;
+}
+
+.rules-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.rules-button:hover {
+  background-color: var(--secondary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.rules-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.rules-button::before {
+  content: "📖 ";
+  margin-right: 5px;
+}
+
+@media (max-width: 768px) {
+  .players {
+    grid-template-columns: 1fr;
+  }
+
+  .other-players {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .other-players .player-hand {
+    width: 100%;
+    max-width: 400px;
+  }
+}

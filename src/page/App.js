@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import PlayerHand from './PlayerHand';
-import GameBoard from './GameBoard';
-import GameStatus from './GameStatus';
-import RulesModal from './RulesModal';
-import Background from './Background';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import Background from "../components/Background/Background";
+import GameBoard from "../components/GameBoard/GameBoard";
+import GameStatus from "../components/GameStatus/GameStatus";
+import PlayerHand from "../components/PlayerHand/PlayerHand";
+import RulesModal from "../components/RulesModal/RulesModal";
+import "./App.css";
 
 const generateDeck = () => {
   const sandDeck = [];
@@ -12,16 +12,16 @@ const generateDeck = () => {
 
   for (let i = 1; i <= 6; i++) {
     for (let j = 0; j < 5; j++) {
-      sandDeck.push({ id: `sand-${i}-${j}`, type: 'sand', value: i });
-      bloodDeck.push({ id: `blood-${i}-${j}`, type: 'blood', value: i });
+      sandDeck.push({ id: `sand-${i}-${j}`, type: "sand", value: i });
+      bloodDeck.push({ id: `blood-${i}-${j}`, type: "blood", value: i });
     }
   }
 
-  sandDeck.push({ id: `sand-sylop`, type: 'sand', value: 'sylop' });
-  sandDeck.push({ id: `sand-impostor`, type: 'sand', value: 'impostor' });
+  sandDeck.push({ id: `sand-sylop`, type: "sand", value: "sylop" });
+  sandDeck.push({ id: `sand-impostor`, type: "sand", value: "impostor" });
 
-  bloodDeck.push({ id: `blood-sylop`, type: 'blood', value: 'sylop' });
-  bloodDeck.push({ id: `blood-impostor`, type: 'blood', value: 'impostor' });
+  bloodDeck.push({ id: `blood-sylop`, type: "blood", value: "sylop" });
+  bloodDeck.push({ id: `blood-impostor`, type: "blood", value: "impostor" });
 
   return {
     sandDeck: shuffleArray(sandDeck),
@@ -36,13 +36,50 @@ const rollDice = () => {
 };
 
 const App = () => {
+  const [isCardSelected, setIsCardSelected] = useState(false);
   const initialTokens = 6;
   const totalTurnsPerManche = 3;
   const [players, setPlayers] = useState([
-    { id: 1, name: 'Vous', tokens: initialTokens, hand: { sand: null, blood: null }, turnsPlayed: 0, sabacc: false, bet: 0, eliminated: false },
-    { id: 2, name: 'Joueur 2', tokens: initialTokens, hand: { sand: null, blood: null }, turnsPlayed: 0, sabacc: false, bet: 0, eliminated: false },
-    { id: 3, name: 'Joueur 3', tokens: initialTokens, hand: { sand: null, blood: null }, turnsPlayed: 0, sabacc: false, bet: 0, eliminated: false },
-    { id: 4, name: 'Joueur 4', tokens: initialTokens, hand: { sand: null, blood: null }, turnsPlayed: 0, sabacc: false, bet: 0, eliminated: false },
+    {
+      id: 1,
+      name: "Vous",
+      tokens: initialTokens,
+      hand: { sand: null, blood: null },
+      turnsPlayed: 0,
+      sabacc: false,
+      bet: 0,
+      eliminated: false,
+    },
+    {
+      id: 2,
+      name: "Joueur 2",
+      tokens: initialTokens,
+      hand: { sand: null, blood: null },
+      turnsPlayed: 0,
+      sabacc: false,
+      bet: 0,
+      eliminated: false,
+    },
+    {
+      id: 3,
+      name: "Joueur 3",
+      tokens: initialTokens,
+      hand: { sand: null, blood: null },
+      turnsPlayed: 0,
+      sabacc: false,
+      bet: 0,
+      eliminated: false,
+    },
+    {
+      id: 4,
+      name: "Joueur 4",
+      tokens: initialTokens,
+      hand: { sand: null, blood: null },
+      turnsPlayed: 0,
+      sabacc: false,
+      bet: 0,
+      eliminated: false,
+    },
   ]);
 
   const [deck, setDeck] = useState({
@@ -79,7 +116,7 @@ const App = () => {
       bloodInvisible,
     });
 
-    const updatedPlayers = players.map(player => ({
+    const updatedPlayers = players.map((player) => ({
       ...player,
       hand: {
         sand: sandInvisible.pop(),
@@ -94,12 +131,12 @@ const App = () => {
     setPlayers(updatedPlayers);
     setPassedPlayers(0);
     setCurrentTurn(1);
-    setCurrentPlayerIndex(0);  // Commencez avec le premier joueur actif
+    setCurrentPlayerIndex(0); // Commencez avec le premier joueur actif
   };
 
   const drawCard = (pileType, playerIndex) => {
     if (players[playerIndex].tokens <= 0) {
-      alert('Vous n\'avez plus de jetons pour piocher.');
+      alert("Vous n'avez plus de jetons pour piocher.");
       return null;
     }
 
@@ -116,9 +153,17 @@ const App = () => {
   };
 
   const handlePileClick = (pileType) => {
+    if (isCardSelected) {
+      alert(
+        "Vous avez déjà sélectionné une carte, vous ne pouvez pas en sélectionner une autre."
+      );
+      return; // Empêcher le joueur de sélectionner une autre carte
+    }
+
     const card = drawCard(pileType, currentPlayerIndex);
     if (card) {
       setDrawnCard(card);
+      setIsCardSelected(true); // Indiquer qu'une carte a été sélectionnée
     }
   };
 
@@ -127,11 +172,12 @@ const App = () => {
     currentPlayer.hand[cardToKeep.type] = cardToKeep;
     discardCard(cardToDiscard, currentPlayerIndex);
     setDrawnCard(null);
+    setIsCardSelected(false); // Réinitialiser l'état pour le prochain tour
     nextPlayer();
   };
 
   const discardCard = (card, playerIndex) => {
-    if (card.type === 'sand') {
+    if (card.type === "sand") {
       deck.sandVisible.pop();
       deck.sandVisible.push(card);
     } else {
@@ -152,8 +198,10 @@ const App = () => {
 
     setPlayers(updatedPlayers);
 
-    let activePlayers = updatedPlayers.filter(player => !player.eliminated && player.tokens > 0);
-    
+    let activePlayers = updatedPlayers.filter(
+      (player) => !player.eliminated && player.tokens > 0
+    );
+
     if (passedPlayers >= activePlayers.length) {
       endRound();
       return;
@@ -191,9 +239,9 @@ const App = () => {
       `${player.name}, vous avez tiré un imposteur ! Les valeurs des dés sont ${diceRolls[0]} et ${diceRolls[1]}. Choisissez une valeur.`
     );
 
-    if (player.hand.sand.value === 'impostor') {
+    if (player.hand.sand.value === "impostor") {
       player.hand.sand.value = parseInt(chosenValue, 10);
-    } else if (player.hand.blood.value === 'impostor') {
+    } else if (player.hand.blood.value === "impostor") {
       player.hand.blood.value = parseInt(chosenValue, 10);
     }
   };
@@ -201,24 +249,24 @@ const App = () => {
   const calculateDifference = (player) => {
     let sandValue = player.hand.sand.value;
     let bloodValue = player.hand.blood.value;
-  
+
     // Si l'une des cartes est un Sylop, elle adopte la valeur de l'autre carte
-    if (sandValue === 'sylop') {
-      sandValue = bloodValue;  // Le Sylop adopte la valeur de la carte de sang
-    } else if (bloodValue === 'sylop') {
-      bloodValue = sandValue;  // Le Sylop adopte la valeur de la carte de sable
+    if (sandValue === "sylop") {
+      sandValue = bloodValue; // Le Sylop adopte la valeur de la carte de sang
+    } else if (bloodValue === "sylop") {
+      bloodValue = sandValue; // Le Sylop adopte la valeur de la carte de sable
     }
-  
+
     // Si les valeurs sont toujours nulles ou non numériques, les ignorer
     sandValue = isNaN(sandValue) ? 0 : sandValue;
     bloodValue = isNaN(bloodValue) ? 0 : bloodValue;
-  
+
     // Si les deux cartes ont la même valeur, c'est une main de Sabacc
     if (sandValue === bloodValue) {
       player.sabacc = true;
       return 0; // Une paire parfaite de Sabacc
     }
-  
+
     // Sinon, calculer la différence normale
     player.sabacc = false;
     return Math.abs(sandValue - bloodValue);
@@ -226,73 +274,77 @@ const App = () => {
 
   const endRound = () => {
     const activePlayers = players.filter((player) => !player.eliminated);
-    
+
     if (activePlayers.length === 0) {
       setGameOver(true);
       alert("La partie est terminée ! Tous les joueurs ont été éliminés.");
       return;
     }
-  
+
     const evaluateHand = (player) => {
       if (!player.hand || !player.hand.sand || !player.hand.blood) {
-        console.error('Main de joueur invalide:', player);
+        console.error("Main de joueur invalide:", player);
         return null;
       }
-    
+
       let sandValue = player.hand.sand.value;
       let bloodValue = player.hand.blood.value;
       let isSabacc = false;
       let isSylop = false;
       let isImpostor = false;
-  
+
       // Gestion des Sylops
-      if (sandValue === 'sylop') {
+      if (sandValue === "sylop") {
         sandValue = bloodValue;
         isSylop = true;
-      } else if (bloodValue === 'sylop') {
+      } else if (bloodValue === "sylop") {
         bloodValue = sandValue;
         isSylop = true;
       }
-  
+
       // Gestion des Imposteurs
-      if (sandValue === 'impostor' || bloodValue === 'impostor') {
+      if (sandValue === "impostor" || bloodValue === "impostor") {
         isImpostor = true;
         const diceRoll = Math.ceil(Math.random() * 6);
-        if (sandValue === 'impostor') {
+        if (sandValue === "impostor") {
           sandValue = diceRoll;
         } else {
           bloodValue = diceRoll;
         }
       }
-  
+
       // Conversion en nombres
-      sandValue = typeof sandValue === 'number' ? sandValue : parseInt(sandValue, 10);
-      bloodValue = typeof bloodValue === 'number' ? bloodValue : parseInt(bloodValue, 10);
-  
+      sandValue =
+        typeof sandValue === "number" ? sandValue : parseInt(sandValue, 10);
+      bloodValue =
+        typeof bloodValue === "number" ? bloodValue : parseInt(bloodValue, 10);
+
       // Vérification de Sabacc
       if (sandValue === bloodValue) {
         isSabacc = true;
       }
-      
+
       const difference = Math.abs(sandValue - bloodValue);
       const value = Math.min(sandValue, bloodValue);
-  
+
       return {
         player,
         difference,
         value,
         isSabacc,
-        isSylop
+        isSylop,
       };
     };
-    
-    const handRankings = activePlayers.map(evaluateHand).filter(hand => hand !== null);
-  
+
+    const handRankings = activePlayers
+      .map(evaluateHand)
+      .filter((hand) => hand !== null);
+
     if (handRankings.length === 0) {
-      console.error('Aucune main valide trouvée');
+      console.error("Aucune main valide trouvée");
       return;
     }
-    
+
     // Tri des mains
     handRankings.sort((a, b) => {
       if (a.isSabacc && b.isSabacc) {
@@ -302,31 +354,38 @@ const App = () => {
       if (b.isSabacc) return 1;
       return a.difference - b.difference;
     });
-    
-    const winners = handRankings.filter(hand => 
-      hand.difference === handRankings[0].difference && 
-      hand.isSabacc === handRankings[0].isSabacc &&
-      hand.value === handRankings[0].value
-    ).map(hand => hand.player);
-    
-    const winnerNames = winners.map(winner => winner.name).join(', ');
-    const winningHandDescription = handRankings[0].isSabacc 
-      ? `Sabacc de ${handRankings[0].value}` 
+
+    const winners = handRankings
+      .filter(
+        (hand) =>
+          hand.difference === handRankings[0].difference &&
+          hand.isSabacc === handRankings[0].isSabacc &&
+          hand.value === handRankings[0].value
+      )
+      .map((hand) => hand.player);
+
+    const winnerNames = winners.map((winner) => winner.name).join(", ");
+    const winningHandDescription = handRankings[0].isSabacc
+      ? `Sabacc de ${handRankings[0].value}`
       : `différence de ${handRankings[0].difference}`;
-    
-    alert(`Les gagnants de la manche sont : ${winnerNames} avec un ${winningHandDescription} !`);
-  
-    const updatedPlayers = players.map(player => {
+
+    alert(
+      `Les gagnants de la manche sont : ${winnerNames} avec un ${winningHandDescription} !`
+    );
+
+    const updatedPlayers = players.map((player) => {
       if (player.eliminated) {
         return player;
       }
-  
-      const playerHand = handRankings.find(hand => hand.player.id === player.id);
+
+      const playerHand = handRankings.find(
+        (hand) => hand.player.id === player.id
+      );
       if (!playerHand) {
-        console.error('Main non trouvée pour le joueur:', player);
+        console.error("Main non trouvée pour le joueur:", player);
         return player;
       }
-  
+
       if (winners.includes(player)) {
         player.tokens += player.bet;
       } else {
@@ -336,17 +395,19 @@ const App = () => {
           player.tokens -= playerHand.difference;
         }
       }
-  
+
       player.tokens = Math.max(0, player.tokens); // Assure que les jetons ne sont jamais négatifs
       player.eliminated = player.tokens === 0;
-  
+
       return player;
     });
-  
+
     setPlayers(updatedPlayers);
-  
+
     // Vérifier si la partie doit se terminer
-    const remainingPlayers = updatedPlayers.filter(player => !player.eliminated);
+    const remainingPlayers = updatedPlayers.filter(
+      (player) => !player.eliminated
+    );
     if (remainingPlayers.length <= 1) {
       setGameOver(true);
       if (remainingPlayers.length === 1) {
@@ -356,16 +417,16 @@ const App = () => {
       }
       return;
     }
-  
+
     startNewRound();
   };
-  
+
   const startNewRound = () => {
     setRound(round + 1);
     setCurrentTurn(1);
-  
-    const activePlayers = players.filter(player => !player.eliminated);
-    
+
+    const activePlayers = players.filter((player) => !player.eliminated);
+
     if (activePlayers.length <= 1) {
       setGameOver(true);
       if (activePlayers.length === 1) {
@@ -380,7 +441,7 @@ const App = () => {
     do {
       nextIndex = (nextIndex + 1) % players.length;
     } while (players[nextIndex].eliminated);
-    
+
     setCurrentPlayerIndex(nextIndex);
     setPassedPlayers(0);
 
@@ -415,10 +476,18 @@ const App = () => {
     setPlayers(newPlayers);
   };
 
+  const handlePass = () => {
+    setIsCardSelected(false); // Réinitialiser l'état si le joueur passe son tour
+    nextPlayer();
+  };
+
   const renderPlayers = () => {
-    const activePlayers = players.filter(player => !player.eliminated);
-    const currentPlayer = activePlayers[currentPlayerIndex % activePlayers.length];
-    const otherPlayers = activePlayers.filter(player => player.id !== currentPlayer.id);
+    const activePlayers = players.filter((player) => !player.eliminated);
+    const currentPlayer =
+      activePlayers[currentPlayerIndex % activePlayers.length];
+    const otherPlayers = activePlayers.filter(
+      (player) => player.id !== currentPlayer.id
+    );
 
     return (
       <>
@@ -429,6 +498,7 @@ const App = () => {
             isCurrent={true}
             drawnCard={drawnCard}
             handleKeepCard={handleKeepCard}
+            handlePass={handlePass} // Passe la fonction handlePass ici
             nextPlayer={() => nextPlayer(false)}
           />
         </div>
@@ -461,16 +531,17 @@ const App = () => {
     <div className="App">
       <Background />
       <h1>Sabacc de Kessel</h1>
-      <button className="rules-button" onClick={() => setIsRulesModalOpen(true)}>
+      <button
+        className="rules-button"
+        onClick={() => setIsRulesModalOpen(true)}
+      >
         Règles du jeu
       </button>
       <GameStatus round={round} turn={currentTurn} />
       <GameBoard deck={deck} handlePileClick={handlePileClick} />
-      <div className="players-container">
-        {renderPlayers()}
-      </div>
-      <RulesModal 
-        isOpen={isRulesModalOpen} 
+      <div className="players-container">{renderPlayers()}</div>
+      <RulesModal
+        isOpen={isRulesModalOpen}
         onClose={() => setIsRulesModalOpen(false)}
       />
     </div>

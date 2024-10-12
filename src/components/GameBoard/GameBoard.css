@@ -1,0 +1,31 @@
+.game-board {
+  background: linear-gradient(145deg, #e6e9ed, #ffffff);
+  border-radius: var(--border-radius);
+  padding: 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.deck-piles {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.deck-pile:hover {
+  transform: translateY(-5px);
+}
+
+.deck-pile {
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  padding: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .deck-piles {
+    flex-direction: column;
+  }
+}

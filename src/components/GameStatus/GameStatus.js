@@ -1,4 +1,5 @@
-import React from 'react';
+import React from "react";
+import "./GameStatus.css";
 
 const GameStatus = ({ round, turn, gameOver }) => {
   if (gameOver) {

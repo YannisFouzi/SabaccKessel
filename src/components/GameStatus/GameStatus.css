@@ -1,0 +1,15 @@
+.game-status h2,
+.game-status h3 {
+  color: white;
+}
+
+.game-status {
+  background-image: url("../../assets/img/hyperspace.jpg");
+  background-size: cover; /* Pour que l'image couvre toute la surface */
+  background-position: center; /* Pour centrer l'image */
+  color: white;
+  padding: 10px 20px;
+  border-radius: var(--border-radius);
+  margin-bottom: 20px;
+  text-align: center;
+}
