@@ -1,5 +1,3 @@
-// PlayerManager.js
-
 export const createInitialPlayers = (initialTokens) => {
   return [
     {

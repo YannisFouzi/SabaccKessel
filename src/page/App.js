@@ -13,11 +13,13 @@ import {
   placePlayerBet,
 } from "../utils/playerManager";
 import "./App.css";
+import ImpostorChoiceModal from "./ImpostorChoiceModal";
 
 const App = () => {
   const initialTokens = 6;
   const totalTurnsPerManche = 3;
-
+  const [impostorChoice, setImpostorChoice] = useState(null);
+  const [isImpostorModalOpen, setIsImpostorModalOpen] = useState(false);
   const [isCardSelected, setIsCardSelected] = useState(false);
   const [players, setPlayers] = useState(createInitialPlayers(initialTokens));
   const [deck, setDeck] = useState({
@@ -105,7 +107,7 @@ const App = () => {
     }
   };
 
-  const endRound = () => {
+  const endRound = async () => {
     const activePlayers = getActivePlayers(players);
 
     if (activePlayers.length === 0) {
@@ -113,6 +115,38 @@ const App = () => {
       alert("La partie est terminée ! Tous les joueurs ont été éliminés.");
       return;
     }
+
+    // Résoudre les cartes Impostor avant l'évaluation des mains
+    const resolveImpostors = async (player) => {
+      let updatedPlayer = { ...player };
+      if (updatedPlayer.hand.sand.value === "impostor") {
+        const result = applyImpostor(updatedPlayer, "sand");
+        updatedPlayer = await handleImpostorChoice(result);
+      }
+      if (updatedPlayer.hand.blood.value === "impostor") {
+        const result = applyImpostor(updatedPlayer, "blood");
+        updatedPlayer = await handleImpostorChoice(result);
+      }
+      return updatedPlayer;
+    };
+
+    const handleImpostorChoice = (impostorData) => {
+      return new Promise((resolve) => {
+        setImpostorChoice(impostorData);
+        setIsImpostorModalOpen(true);
+        const handleChoice = (chosenValue) => {
+          setIsImpostorModalOpen(false);
+          const updatedPlayer = { ...impostorData.player };
+          updatedPlayer.hand[impostorData.cardType].value = chosenValue;
+          resolve(updatedPlayer);
+        };
+        setImpostorChoice({ ...impostorData, onChoice: handleChoice });
+      });
+    };
+
+    const playersWithResolvedHands = await Promise.all(
+      activePlayers.map(resolveImpostors)
+    );
 
     const evaluateHand = (player) => {
       if (!player.hand || !player.hand.sand || !player.hand.blood) {
@@ -124,24 +158,19 @@ const App = () => {
       let bloodValue = player.hand.blood.value;
       let isSabacc = false;
       let isSylopPair = false;
-      let isImpostor = false;
+      let isPair = false;
 
       if (sandValue === "sylop" && bloodValue === "sylop") {
         isSylopPair = true;
-        return { player, isSylopPair, value: Infinity, difference: 0 };
+        return { player, isSylopPair, value: -1, difference: 0 };
       }
 
       if (sandValue === "sylop") {
         sandValue = bloodValue;
+        isPair = true;
       } else if (bloodValue === "sylop") {
         bloodValue = sandValue;
-      }
-
-      if (sandValue === "impostor" || bloodValue === "impostor") {
-        isImpostor = true;
-        player = applyImpostor(player);
-        sandValue = player.hand.sand.value;
-        bloodValue = player.hand.blood.value;
+        isPair = true;
       }
 
       sandValue =
@@ -150,16 +179,19 @@ const App = () => {
         typeof bloodValue === "number" ? bloodValue : parseInt(bloodValue, 10);
 
       if (sandValue === bloodValue) {
+        isPair = true;
         isSabacc = true;
       }
 
       const difference = Math.abs(sandValue - bloodValue);
-      const value = Math.min(sandValue, bloodValue);
+      const value = isPair
+        ? Math.min(sandValue, bloodValue)
+        : Math.max(sandValue, bloodValue);
 
-      return { player, difference, value, isSabacc, isSylopPair };
+      return { player, difference, value, isSabacc, isSylopPair, isPair };
     };
 
-    const handRankings = activePlayers
+    const handRankings = playersWithResolvedHands
       .map(evaluateHand)
       .filter((hand) => hand !== null);
 
@@ -171,9 +203,9 @@ const App = () => {
     handRankings.sort((a, b) => {
       if (a.isSylopPair && !b.isSylopPair) return -1;
       if (!a.isSylopPair && b.isSylopPair) return 1;
-      if (a.isSabacc && b.isSabacc) return b.value - a.value;
-      if (a.isSabacc) return -1;
-      if (b.isSabacc) return 1;
+      if (a.isPair && !b.isPair) return -1;
+      if (!a.isPair && b.isPair) return 1;
+      if (a.isPair && b.isPair) return a.value - b.value;
       return a.difference - b.difference;
     });
 
@@ -181,8 +213,8 @@ const App = () => {
       .filter(
         (hand) =>
           hand.isSylopPair === handRankings[0].isSylopPair &&
+          hand.isPair === handRankings[0].isPair &&
           hand.difference === handRankings[0].difference &&
-          hand.isSabacc === handRankings[0].isSabacc &&
           hand.value === handRankings[0].value
       )
       .map((hand) => hand.player);
@@ -191,8 +223,8 @@ const App = () => {
     let winningHandDescription;
     if (handRankings[0].isSylopPair) {
       winningHandDescription = "une paire de Sylop";
-    } else if (handRankings[0].isSabacc) {
-      winningHandDescription = `un Sabacc de ${handRankings[0].value}`;
+    } else if (handRankings[0].isPair) {
+      winningHandDescription = `une paire de ${handRankings[0].value}`;
     } else {
       winningHandDescription = `une différence de ${handRankings[0].difference}`;
     }
@@ -200,6 +232,9 @@ const App = () => {
     alert(
       `Les gagnants de la manche sont : ${winnerNames} avec ${winningHandDescription} !`
     );
+
+    // Mettre à jour l'état des joueurs avec les mains résolues
+    setPlayers(playersWithResolvedHands);
 
     const updatedPlayers = players.map((player) => {
       if (player.eliminated) {
@@ -358,6 +393,13 @@ const App = () => {
       <RulesModal
         isOpen={isRulesModalOpen}
         onClose={() => setIsRulesModalOpen(false)}
+      />
+      <ImpostorChoiceModal
+        isOpen={isImpostorModalOpen}
+        onClose={() => setIsImpostorModalOpen(false)}
+        playerName={impostorChoice ? impostorChoice.player.name : ""}
+        diceRolls={impostorChoice ? impostorChoice.diceRolls : []}
+        onChoice={impostorChoice ? impostorChoice.onChoice : () => {}}
       />
     </div>
   );

@@ -1,5 +1,3 @@
-// src/Background.js
-
 import React, { useEffect } from "react";
 import "./Background.css";
 

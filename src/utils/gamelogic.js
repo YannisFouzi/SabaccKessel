@@ -44,19 +44,10 @@ export const initializeGame = (
   setCurrentPlayerIndex(0);
 };
 
-export const applyImpostor = (player) => {
+export const applyImpostor = (player, cardType) => {
   const diceRolls = rollDice();
-  const chosenValue = window.prompt(
-    `${player.name}, vous avez tiré un imposteur ! Les valeurs des dés sont ${diceRolls[0]} et ${diceRolls[1]}. Choisissez une valeur.`
-  );
-
-  if (player.hand.sand.value === "impostor") {
-    player.hand.sand.value = parseInt(chosenValue, 10);
-  } else if (player.hand.blood.value === "impostor") {
-    player.hand.blood.value = parseInt(chosenValue, 10);
-  }
+  return { player, cardType, diceRolls };
 };
-
 export const calculateDifference = (player) => {
   let sandValue = player.hand.sand.value;
   let bloodValue = player.hand.blood.value;
