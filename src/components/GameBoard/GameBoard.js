@@ -3,7 +3,28 @@ import dos from "../../assets/img/dos.png";
 import Card from "../Card/Card";
 import "./GameBoard.css";
 
-const GameBoard = ({ deck, handlePileClick }) => {
+const GameBoard = ({
+  deck,
+  drawCard,
+  isCardSelected,
+  setDrawnCard,
+  setIsCardSelected,
+}) => {
+  const handlePileClick = (pileType) => {
+    if (isCardSelected) {
+      alert(
+        "Vous avez déjà sélectionné une carte, vous ne pouvez pas en sélectionner une autre."
+      );
+      return;
+    }
+
+    const card = drawCard(pileType);
+    if (card) {
+      setDrawnCard(card);
+      setIsCardSelected(true);
+    }
+  };
+
   return (
     <div className="game-board">
       <div className="deck-piles">

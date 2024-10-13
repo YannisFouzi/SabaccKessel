@@ -5,12 +5,34 @@ import "./PlayerHand.css";
 const PlayerHand = ({
   player,
   isCurrent,
-  discardCard,
   nextPlayer,
   drawnCard,
-  handleKeepCard,
-  handlePass, // Ajoute handlePass en prop pour pouvoir passer le tour
+  handlePass,
+  deck,
+  setDeck,
+  setDrawnCard,
+  setIsCardSelected,
 }) => {
+  const discardCard = (card) => {
+    const newDeck = { ...deck };
+    if (card.type === "sand") {
+      newDeck.sandVisible.pop();
+      newDeck.sandVisible.push(card);
+    } else {
+      newDeck.bloodVisible.pop();
+      newDeck.bloodVisible.push(card);
+    }
+    setDeck(newDeck);
+  };
+
+  const handleKeepCard = (cardToKeep, cardToDiscard) => {
+    player.hand[cardToKeep.type] = cardToKeep;
+    discardCard(cardToDiscard);
+    setDrawnCard(null);
+    setIsCardSelected(false);
+    nextPlayer();
+  };
+
   return (
     <div
       className={`player-hand ${isCurrent ? "current" : ""}`}
@@ -36,8 +58,7 @@ const PlayerHand = ({
         </div>
         {isCurrent && !drawnCard && (
           <div className="actions">
-            <button onClick={handlePass}>Passer</button>{" "}
-            {/* Utilise handlePass */}
+            <button onClick={handlePass}>Passer</button>
           </div>
         )}
       </div>

@@ -4,84 +4,22 @@ import GameBoard from "../components/GameBoard/GameBoard";
 import GameStatus from "../components/GameStatus/GameStatus";
 import PlayerHand from "../components/PlayerHand/PlayerHand";
 import RulesModal from "../components/RulesModal/RulesModal";
+import { applyImpostor, initializeGame } from "../utils/gamelogic";
+import {
+  createInitialPlayers,
+  eliminatePlayer,
+  getActivePlayers,
+  getNextPlayerIndex,
+  placePlayerBet,
+} from "../utils/playerManager";
 import "./App.css";
 
-const generateDeck = () => {
-  const sandDeck = [];
-  const bloodDeck = [];
-
-  for (let i = 1; i <= 6; i++) {
-    for (let j = 0; j < 5; j++) {
-      sandDeck.push({ id: `sand-${i}-${j}`, type: "sand", value: i });
-      bloodDeck.push({ id: `blood-${i}-${j}`, type: "blood", value: i });
-    }
-  }
-
-  sandDeck.push({ id: `sand-sylop`, type: "sand", value: "sylop" });
-  sandDeck.push({ id: `sand-impostor`, type: "sand", value: "impostor" });
-
-  bloodDeck.push({ id: `blood-sylop`, type: "blood", value: "sylop" });
-  bloodDeck.push({ id: `blood-impostor`, type: "blood", value: "impostor" });
-
-  return {
-    sandDeck: shuffleArray(sandDeck),
-    bloodDeck: shuffleArray(bloodDeck),
-  };
-};
-
-const shuffleArray = (array) => array.sort(() => Math.random() - 0.5);
-
-const rollDice = () => {
-  return [Math.ceil(Math.random() * 6), Math.ceil(Math.random() * 6)];
-};
-
 const App = () => {
-  const [isCardSelected, setIsCardSelected] = useState(false);
   const initialTokens = 6;
   const totalTurnsPerManche = 3;
-  const [players, setPlayers] = useState([
-    {
-      id: 1,
-      name: "Vous",
-      tokens: initialTokens,
-      hand: { sand: null, blood: null },
-      turnsPlayed: 0,
-      sabacc: false,
-      bet: 0,
-      eliminated: false,
-    },
-    {
-      id: 2,
-      name: "Joueur 2",
-      tokens: initialTokens,
-      hand: { sand: null, blood: null },
-      turnsPlayed: 0,
-      sabacc: false,
-      bet: 0,
-      eliminated: false,
-    },
-    {
-      id: 3,
-      name: "Joueur 3",
-      tokens: initialTokens,
-      hand: { sand: null, blood: null },
-      turnsPlayed: 0,
-      sabacc: false,
-      bet: 0,
-      eliminated: false,
-    },
-    {
-      id: 4,
-      name: "Joueur 4",
-      tokens: initialTokens,
-      hand: { sand: null, blood: null },
-      turnsPlayed: 0,
-      sabacc: false,
-      bet: 0,
-      eliminated: false,
-    },
-  ]);
 
+  const [isCardSelected, setIsCardSelected] = useState(false);
+  const [players, setPlayers] = useState(createInitialPlayers(initialTokens));
   const [deck, setDeck] = useState({
     sandVisible: [],
     sandInvisible: [],
@@ -89,7 +27,6 @@ const App = () => {
     bloodInvisible: [],
   });
   const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
-
   const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
   const [round, setRound] = useState(1);
   const [currentTurn, setCurrentTurn] = useState(1);
@@ -98,41 +35,15 @@ const App = () => {
   const [drawnCard, setDrawnCard] = useState(null);
 
   useEffect(() => {
-    initializeGame();
+    initializeGame(
+      players,
+      setPlayers,
+      setDeck,
+      setPassedPlayers,
+      setCurrentTurn,
+      setCurrentPlayerIndex
+    );
   }, []);
-
-  const initializeGame = () => {
-    const { sandDeck, bloodDeck } = generateDeck();
-
-    const sandVisible = [sandDeck.pop()];
-    const sandInvisible = sandDeck.splice(0, 14);
-    const bloodVisible = [bloodDeck.pop()];
-    const bloodInvisible = bloodDeck.splice(0, 14);
-
-    setDeck({
-      sandVisible,
-      sandInvisible,
-      bloodVisible,
-      bloodInvisible,
-    });
-
-    const updatedPlayers = players.map((player) => ({
-      ...player,
-      hand: {
-        sand: sandInvisible.pop(),
-        blood: bloodInvisible.pop(),
-      },
-      turnsPlayed: 0,
-      sabacc: false,
-      bet: 0,
-      eliminated: false,
-    }));
-
-    setPlayers(updatedPlayers);
-    setPassedPlayers(0);
-    setCurrentTurn(1);
-    setCurrentPlayerIndex(0); // Commencez avec le premier joueur actif
-  };
 
   const drawCard = (pileType, playerIndex) => {
     if (players[playerIndex].tokens <= 0) {
@@ -145,46 +56,13 @@ const App = () => {
     setDeck(newDeck);
 
     const updatedPlayers = [...players];
-    updatedPlayers[playerIndex].tokens -= 1;
-    updatedPlayers[playerIndex].bet += 1;
+    updatedPlayers[playerIndex] = placePlayerBet(
+      updatedPlayers[playerIndex],
+      1
+    );
     setPlayers(updatedPlayers);
 
     return drawnCard;
-  };
-
-  const handlePileClick = (pileType) => {
-    if (isCardSelected) {
-      alert(
-        "Vous avez déjà sélectionné une carte, vous ne pouvez pas en sélectionner une autre."
-      );
-      return; // Empêcher le joueur de sélectionner une autre carte
-    }
-
-    const card = drawCard(pileType, currentPlayerIndex);
-    if (card) {
-      setDrawnCard(card);
-      setIsCardSelected(true); // Indiquer qu'une carte a été sélectionnée
-    }
-  };
-
-  const handleKeepCard = (cardToKeep, cardToDiscard) => {
-    const currentPlayer = players[currentPlayerIndex];
-    currentPlayer.hand[cardToKeep.type] = cardToKeep;
-    discardCard(cardToDiscard, currentPlayerIndex);
-    setDrawnCard(null);
-    setIsCardSelected(false); // Réinitialiser l'état pour le prochain tour
-    nextPlayer();
-  };
-
-  const discardCard = (card, playerIndex) => {
-    if (card.type === "sand") {
-      deck.sandVisible.pop();
-      deck.sandVisible.push(card);
-    } else {
-      deck.bloodVisible.pop();
-      deck.bloodVisible.push(card);
-    }
-    setDeck({ ...deck });
   };
 
   const nextPlayer = (playerPassed = false) => {
@@ -193,34 +71,28 @@ const App = () => {
     if (playerPassed) {
       setPassedPlayers(passedPlayers + 1);
     } else {
-      updatedPlayers[currentPlayerIndex].turnsPlayed += 1;
+      updatedPlayers[currentPlayerIndex] = {
+        ...updatedPlayers[currentPlayerIndex],
+        turnsPlayed: updatedPlayers[currentPlayerIndex].turnsPlayed + 1,
+      };
     }
 
     setPlayers(updatedPlayers);
 
-    let activePlayers = updatedPlayers.filter(
-      (player) => !player.eliminated && player.tokens > 0
-    );
+    let activePlayers = getActivePlayers(updatedPlayers);
 
     if (passedPlayers >= activePlayers.length) {
       endRound();
       return;
     }
 
-    let nextIndex = currentPlayerIndex;
-    let loopCount = 0;
+    const nextIndex = getNextPlayerIndex(currentPlayerIndex, updatedPlayers);
 
-    do {
-      nextIndex = (nextIndex + 1) % players.length;
-      loopCount++;
-
-      if (loopCount > players.length) {
-        // Si nous avons fait le tour complet sans trouver de joueur actif, on termine la partie
-        setGameOver(true);
-        alert("La partie est terminée ! Il n'y a plus de joueurs actifs.");
-        return;
-      }
-    } while (players[nextIndex].eliminated);
+    if (nextIndex === currentPlayerIndex) {
+      setGameOver(true);
+      alert("La partie est terminée ! Il n'y a plus de joueurs actifs.");
+      return;
+    }
 
     setCurrentPlayerIndex(nextIndex);
 
@@ -233,47 +105,8 @@ const App = () => {
     }
   };
 
-  const applyImpostor = (player) => {
-    const diceRolls = rollDice();
-    const chosenValue = window.prompt(
-      `${player.name}, vous avez tiré un imposteur ! Les valeurs des dés sont ${diceRolls[0]} et ${diceRolls[1]}. Choisissez une valeur.`
-    );
-
-    if (player.hand.sand.value === "impostor") {
-      player.hand.sand.value = parseInt(chosenValue, 10);
-    } else if (player.hand.blood.value === "impostor") {
-      player.hand.blood.value = parseInt(chosenValue, 10);
-    }
-  };
-
-  const calculateDifference = (player) => {
-    let sandValue = player.hand.sand.value;
-    let bloodValue = player.hand.blood.value;
-
-    // Si l'une des cartes est un Sylop, elle adopte la valeur de l'autre carte
-    if (sandValue === "sylop") {
-      sandValue = bloodValue; // Le Sylop adopte la valeur de la carte de sang
-    } else if (bloodValue === "sylop") {
-      bloodValue = sandValue; // Le Sylop adopte la valeur de la carte de sable
-    }
-
-    // Si les valeurs sont toujours nulles ou non numériques, les ignorer
-    sandValue = isNaN(sandValue) ? 0 : sandValue;
-    bloodValue = isNaN(bloodValue) ? 0 : bloodValue;
-
-    // Si les deux cartes ont la même valeur, c'est une main de Sabacc
-    if (sandValue === bloodValue) {
-      player.sabacc = true;
-      return 0; // Une paire parfaite de Sabacc
-    }
-
-    // Sinon, calculer la différence normale
-    player.sabacc = false;
-    return Math.abs(sandValue - bloodValue);
-  };
-
   const endRound = () => {
-    const activePlayers = players.filter((player) => !player.eliminated);
+    const activePlayers = getActivePlayers(players);
 
     if (activePlayers.length === 0) {
       setGameOver(true);
@@ -290,36 +123,32 @@ const App = () => {
       let sandValue = player.hand.sand.value;
       let bloodValue = player.hand.blood.value;
       let isSabacc = false;
-      let isSylop = false;
+      let isSylopPair = false;
       let isImpostor = false;
 
-      // Gestion des Sylops
+      if (sandValue === "sylop" && bloodValue === "sylop") {
+        isSylopPair = true;
+        return { player, isSylopPair, value: Infinity, difference: 0 };
+      }
+
       if (sandValue === "sylop") {
         sandValue = bloodValue;
-        isSylop = true;
       } else if (bloodValue === "sylop") {
         bloodValue = sandValue;
-        isSylop = true;
       }
 
-      // Gestion des Imposteurs
       if (sandValue === "impostor" || bloodValue === "impostor") {
         isImpostor = true;
-        const diceRoll = Math.ceil(Math.random() * 6);
-        if (sandValue === "impostor") {
-          sandValue = diceRoll;
-        } else {
-          bloodValue = diceRoll;
-        }
+        player = applyImpostor(player);
+        sandValue = player.hand.sand.value;
+        bloodValue = player.hand.blood.value;
       }
 
-      // Conversion en nombres
       sandValue =
         typeof sandValue === "number" ? sandValue : parseInt(sandValue, 10);
       bloodValue =
         typeof bloodValue === "number" ? bloodValue : parseInt(bloodValue, 10);
 
-      // Vérification de Sabacc
       if (sandValue === bloodValue) {
         isSabacc = true;
       }
@@ -327,13 +156,7 @@ const App = () => {
       const difference = Math.abs(sandValue - bloodValue);
       const value = Math.min(sandValue, bloodValue);
 
-      return {
-        player,
-        difference,
-        value,
-        isSabacc,
-        isSylop,
-      };
+      return { player, difference, value, isSabacc, isSylopPair };
     };
 
     const handRankings = activePlayers
@@ -345,11 +168,10 @@ const App = () => {
       return;
     }
 
-    // Tri des mains
     handRankings.sort((a, b) => {
-      if (a.isSabacc && b.isSabacc) {
-        return a.value - b.value;
-      }
+      if (a.isSylopPair && !b.isSylopPair) return -1;
+      if (!a.isSylopPair && b.isSylopPair) return 1;
+      if (a.isSabacc && b.isSabacc) return b.value - a.value;
       if (a.isSabacc) return -1;
       if (b.isSabacc) return 1;
       return a.difference - b.difference;
@@ -358,6 +180,7 @@ const App = () => {
     const winners = handRankings
       .filter(
         (hand) =>
+          hand.isSylopPair === handRankings[0].isSylopPair &&
           hand.difference === handRankings[0].difference &&
           hand.isSabacc === handRankings[0].isSabacc &&
           hand.value === handRankings[0].value
@@ -365,12 +188,17 @@ const App = () => {
       .map((hand) => hand.player);
 
     const winnerNames = winners.map((winner) => winner.name).join(", ");
-    const winningHandDescription = handRankings[0].isSabacc
-      ? `Sabacc de ${handRankings[0].value}`
-      : `différence de ${handRankings[0].difference}`;
+    let winningHandDescription;
+    if (handRankings[0].isSylopPair) {
+      winningHandDescription = "une paire de Sylop";
+    } else if (handRankings[0].isSabacc) {
+      winningHandDescription = `un Sabacc de ${handRankings[0].value}`;
+    } else {
+      winningHandDescription = `une différence de ${handRankings[0].difference}`;
+    }
 
     alert(
-      `Les gagnants de la manche sont : ${winnerNames} avec un ${winningHandDescription} !`
+      `Les gagnants de la manche sont : ${winnerNames} avec ${winningHandDescription} !`
     );
 
     const updatedPlayers = players.map((player) => {
@@ -396,18 +224,16 @@ const App = () => {
         }
       }
 
-      player.tokens = Math.max(0, player.tokens); // Assure que les jetons ne sont jamais négatifs
-      player.eliminated = player.tokens === 0;
-
+      player.tokens = Math.max(0, player.tokens);
+      if (player.tokens === 0) {
+        return eliminatePlayer(player);
+      }
       return player;
     });
 
     setPlayers(updatedPlayers);
 
-    // Vérifier si la partie doit se terminer
-    const remainingPlayers = updatedPlayers.filter(
-      (player) => !player.eliminated
-    );
+    const remainingPlayers = getActivePlayers(updatedPlayers);
     if (remainingPlayers.length <= 1) {
       setGameOver(true);
       if (remainingPlayers.length === 1) {
@@ -425,7 +251,7 @@ const App = () => {
     setRound(round + 1);
     setCurrentTurn(1);
 
-    const activePlayers = players.filter((player) => !player.eliminated);
+    const activePlayers = getActivePlayers(players);
 
     if (activePlayers.length <= 1) {
       setGameOver(true);
@@ -437,52 +263,28 @@ const App = () => {
       return;
     }
 
-    let nextIndex = currentPlayerIndex;
-    do {
-      nextIndex = (nextIndex + 1) % players.length;
-    } while (players[nextIndex].eliminated);
+    const nextIndex = getNextPlayerIndex(currentPlayerIndex, players);
 
     setCurrentPlayerIndex(nextIndex);
     setPassedPlayers(0);
 
-    const { sandDeck, bloodDeck } = generateDeck();
-    const sandVisible = [sandDeck.pop()];
-    const sandInvisible = sandDeck.splice(0, 14);
-    const bloodVisible = [bloodDeck.pop()];
-    const bloodInvisible = bloodDeck.splice(0, 14);
-
-    setDeck({
-      sandVisible,
-      sandInvisible,
-      bloodVisible,
-      bloodInvisible,
-    });
-
-    const newPlayers = players.map((player) => {
-      if (!player.eliminated && player.tokens > 0) {
-        return {
-          ...player,
-          hand: {
-            sand: sandInvisible.pop(),
-            blood: bloodInvisible.pop(),
-          },
-          turnsPlayed: 0,
-          sabacc: false,
-          bet: 0,
-        };
-      }
-      return player;
-    });
-    setPlayers(newPlayers);
+    initializeGame(
+      players,
+      setPlayers,
+      setDeck,
+      setPassedPlayers,
+      setCurrentTurn,
+      setCurrentPlayerIndex
+    );
   };
 
   const handlePass = () => {
-    setIsCardSelected(false); // Réinitialiser l'état si le joueur passe son tour
-    nextPlayer();
+    setIsCardSelected(false);
+    nextPlayer(true);
   };
 
   const renderPlayers = () => {
-    const activePlayers = players.filter((player) => !player.eliminated);
+    const activePlayers = getActivePlayers(players);
     const currentPlayer =
       activePlayers[currentPlayerIndex % activePlayers.length];
     const otherPlayers = activePlayers.filter(
@@ -497,9 +299,12 @@ const App = () => {
             player={currentPlayer}
             isCurrent={true}
             drawnCard={drawnCard}
-            handleKeepCard={handleKeepCard}
-            handlePass={handlePass} // Passe la fonction handlePass ici
+            handlePass={handlePass}
             nextPlayer={() => nextPlayer(false)}
+            deck={deck}
+            setDeck={setDeck}
+            setDrawnCard={setDrawnCard}
+            setIsCardSelected={setIsCardSelected}
           />
         </div>
         <div className="other-players">
@@ -509,8 +314,12 @@ const App = () => {
               player={player}
               isCurrent={false}
               drawnCard={null}
-              handleKeepCard={() => {}}
-              nextPlayer={() => nextPlayer(false)}
+              handlePass={() => {}}
+              nextPlayer={() => {}}
+              deck={deck}
+              setDeck={setDeck}
+              setDrawnCard={setDrawnCard}
+              setIsCardSelected={setIsCardSelected}
             />
           ))}
         </div>
@@ -538,7 +347,13 @@ const App = () => {
         Règles du jeu
       </button>
       <GameStatus round={round} turn={currentTurn} />
-      <GameBoard deck={deck} handlePileClick={handlePileClick} />
+      <GameBoard
+        deck={deck}
+        drawCard={(pileType) => drawCard(pileType, currentPlayerIndex)}
+        isCardSelected={isCardSelected}
+        setDrawnCard={setDrawnCard}
+        setIsCardSelected={setIsCardSelected}
+      />
       <div className="players-container">{renderPlayers()}</div>
       <RulesModal
         isOpen={isRulesModalOpen}
