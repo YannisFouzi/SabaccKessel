@@ -56,7 +56,7 @@ export const placePlayerBet = (player, betAmount) => {
 };
 
 export const eliminatePlayer = (player) => {
-  return { ...player, eliminated: true };
+  return { ...player, eliminated: true, tokens: 0 };
 };
 
 export const resetPlayerForNewRound = (player, newHand) => {

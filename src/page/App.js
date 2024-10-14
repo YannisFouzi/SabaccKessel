@@ -48,13 +48,45 @@ const App = () => {
   }, []);
 
   const drawCard = (pileType, playerIndex) => {
-    if (players[playerIndex].tokens <= 0) {
-      alert("Vous n'avez plus de jetons pour piocher.");
+    console.log(
+      `Tentative de pioche pour ${players[playerIndex].name} dans la pile ${pileType}`
+    );
+
+    const player = players[playerIndex];
+
+    if (player.eliminated) {
+      console.error(
+        `Tentative de pioche par un joueur éliminé : ${player.name}`
+      );
+      nextPlayer(true);
       return null;
+    }
+
+    if (player.tokens <= 0) {
+      console.warn(`${player.name} n'a plus de jetons pour piocher.`);
+      nextPlayer(true);
+      return null;
+    }
+
+    if (deck[pileType].length === 0) {
+      console.warn(
+        `La pile ${pileType} est vide. Tentative de pioche dans une autre pile.`
+      );
+      const otherPiles = Object.keys(deck).filter(
+        (pile) => pile !== pileType && deck[pile].length > 0
+      );
+      if (otherPiles.length === 0) {
+        console.error("Toutes les piles sont vides. Impossible de piocher.");
+        nextPlayer(true);
+        return null;
+      }
+      pileType = otherPiles[Math.floor(Math.random() * otherPiles.length)];
+      console.log(`Pioche dans la pile alternative : ${pileType}`);
     }
 
     const newDeck = { ...deck };
     const drawnCard = newDeck[pileType].pop();
+
     setDeck(newDeck);
 
     const updatedPlayers = [...players];
@@ -64,51 +96,125 @@ const App = () => {
     );
     setPlayers(updatedPlayers);
 
+    console.log(
+      `${player.name} a tiré une carte : ${drawnCard.type} ${drawnCard.value}`
+    );
+    console.log(
+      `Jetons restants pour ${player.name} : ${updatedPlayers[playerIndex].tokens}`
+    );
+
+    if (pileType.includes("Visible")) {
+      if (newDeck[pileType.replace("Visible", "Invisible")].length > 0) {
+        const newVisibleCard =
+          newDeck[pileType.replace("Visible", "Invisible")].pop();
+        newDeck[pileType].push(newVisibleCard);
+        setDeck(newDeck);
+        console.log(
+          `Nouvelle carte visible dans la pile ${pileType} : ${newVisibleCard.type} ${newVisibleCard.value}`
+        );
+      } else {
+        console.log(
+          `Pas de carte disponible pour remplacer dans la pile ${pileType}`
+        );
+      }
+    }
+
+    setIsCardSelected(true);
+    setDrawnCard(drawnCard);
+
     return drawnCard;
   };
 
   const nextPlayer = (playerPassed = false) => {
+    console.log(
+      "Début de nextPlayer. Joueur actuel:",
+      players[currentPlayerIndex].name
+    );
+
     let updatedPlayers = [...players];
 
     if (playerPassed) {
-      setPassedPlayers(passedPlayers + 1);
+      setPassedPlayers((prevPassedPlayers) => prevPassedPlayers + 1);
+      console.log(
+        `${
+          updatedPlayers[currentPlayerIndex].name
+        } a passé. Total des joueurs passés: ${passedPlayers + 1}`
+      );
     } else {
       updatedPlayers[currentPlayerIndex] = {
         ...updatedPlayers[currentPlayerIndex],
         turnsPlayed: updatedPlayers[currentPlayerIndex].turnsPlayed + 1,
       };
+      console.log(
+        `${
+          updatedPlayers[currentPlayerIndex].name
+        } a joué son tour. Tours joués: ${
+          updatedPlayers[currentPlayerIndex].turnsPlayed + 1
+        }`
+      );
     }
 
     setPlayers(updatedPlayers);
 
     let activePlayers = getActivePlayers(updatedPlayers);
+    console.log(
+      "Joueurs actifs:",
+      activePlayers.map((p) => p.name)
+    );
 
-    if (passedPlayers >= activePlayers.length) {
+    if (passedPlayers + (playerPassed ? 1 : 0) >= activePlayers.length) {
+      console.log(
+        "Tous les joueurs ont passé ou joué leurs tours. Fin de la manche."
+      );
       endRound();
       return;
     }
 
-    const nextIndex = getNextPlayerIndex(currentPlayerIndex, updatedPlayers);
-
-    if (nextIndex === currentPlayerIndex) {
-      setGameOver(true);
-      alert("La partie est terminée ! Il n'y a plus de joueurs actifs.");
-      return;
-    }
+    let nextIndex = currentPlayerIndex;
+    let attempts = 0;
+    do {
+      nextIndex = (nextIndex + 1) % updatedPlayers.length;
+      attempts++;
+      if (attempts > updatedPlayers.length) {
+        console.error(
+          "Impossible de trouver le prochain joueur actif. Fin de la partie."
+        );
+        setGameOver(true);
+        return;
+      }
+    } while (
+      updatedPlayers[nextIndex].eliminated ||
+      updatedPlayers[nextIndex].tokens === 0
+    );
 
     setCurrentPlayerIndex(nextIndex);
+    console.log(`Prochain joueur: ${updatedPlayers[nextIndex].name}`);
 
     if (updatedPlayers[nextIndex].turnsPlayed >= totalTurnsPerManche) {
+      console.log(
+        `${updatedPlayers[nextIndex].name} a joué tous ses tours. Fin de la manche.`
+      );
       endRound();
     } else {
       if (nextIndex === 0) {
-        setCurrentTurn(currentTurn + 1);
+        setCurrentTurn((prevTurn) => prevTurn + 1);
+        console.log(`Nouveau tour commencé. Tour actuel: ${currentTurn + 1}`);
       }
     }
+
+    setIsCardSelected(false);
+    setDrawnCard(null);
+
+    console.log(`Tour passé au joueur ${updatedPlayers[nextIndex].name}`);
   };
 
   const endRound = async () => {
+    console.log("Début de endRound");
     const activePlayers = getActivePlayers(players);
+    console.log(
+      "Joueurs actifs au début de la manche :",
+      activePlayers.map((p) => `${p.name}: ${p.tokens} jetons, mise ${p.bet}`)
+    );
 
     if (activePlayers.length === 0) {
       setGameOver(true);
@@ -219,6 +325,15 @@ const App = () => {
       )
       .map((hand) => hand.player);
 
+    console.log(
+      "Gagnants de la manche :",
+      winners.map((w) => w.name)
+    );
+    console.log(
+      "Détails des gagnants:",
+      winners.map((w) => ({ id: w.id, name: w.name }))
+    );
+
     const winnerNames = winners.map((winner) => winner.name).join(", ");
     let winningHandDescription;
     if (handRankings[0].isSylopPair) {
@@ -233,10 +348,15 @@ const App = () => {
       `Les gagnants de la manche sont : ${winnerNames} avec ${winningHandDescription} !`
     );
 
-    // Mettre à jour l'état des joueurs avec les mains résolues
-    setPlayers(playersWithResolvedHands);
-
     const updatedPlayers = players.map((player) => {
+      console.log("État complet du joueur:", JSON.stringify(player));
+      console.log(
+        "Avant mise à jour :",
+        player.name,
+        player.tokens,
+        player.bet
+      );
+
       if (player.eliminated) {
         return player;
       }
@@ -249,26 +369,57 @@ const App = () => {
         return player;
       }
 
-      if (winners.includes(player)) {
+      console.log(
+        `${player.name} est-il gagnant?`,
+        winners.some((winner) => winner.id === player.id)
+      );
+
+      if (winners.some((winner) => winner.id === player.id)) {
         player.tokens += player.bet;
+        console.log(
+          `${player.name} gagne et récupère sa mise de ${player.bet}`
+        );
       } else {
         if (playerHand.isSabacc) {
           player.tokens -= 1;
+          console.log(`${player.name} a un Sabacc et perd 1 jeton`);
         } else {
-          player.tokens -= playerHand.difference;
+          const lostTokens = playerHand.difference;
+          player.tokens -= lostTokens;
+          console.log(
+            `${player.name} perd ${lostTokens} jetons (différence entre ses cartes)`
+          );
         }
       }
 
       player.tokens = Math.max(0, player.tokens);
-      if (player.tokens === 0) {
-        return eliminatePlayer(player);
-      }
+      player.bet = 0;
+
+      console.log(
+        "Après mise à jour :",
+        player.name,
+        player.tokens,
+        player.bet
+      );
+
       return player;
     });
 
-    setPlayers(updatedPlayers);
+    // Éliminer les joueurs qui n'ont plus de jetons
+    const finalPlayers = updatedPlayers.map((player) =>
+      player.tokens === 0 ? eliminatePlayer(player) : player
+    );
 
-    const remainingPlayers = getActivePlayers(updatedPlayers);
+    setPlayers(finalPlayers);
+    console.log(
+      "Après setPlayers :",
+      finalPlayers.map(
+        (p) =>
+          `${p.name}: ${p.tokens} jetons, mise ${p.bet}, éliminé: ${p.eliminated}`
+      )
+    );
+
+    const remainingPlayers = getActivePlayers(finalPlayers);
     if (remainingPlayers.length <= 1) {
       setGameOver(true);
       if (remainingPlayers.length === 1) {
@@ -283,11 +434,21 @@ const App = () => {
   };
 
   const startNewRound = () => {
+    console.log(
+      "Début de startNewRound :",
+      players.map((p) => `${p.name}: ${p.tokens} jetons, mise ${p.bet}`)
+    );
+
+    // Incrémenter le numéro de la manche
     setRound(round + 1);
+
+    // Réinitialiser le tour à 1
     setCurrentTurn(1);
 
+    // Obtenir la liste des joueurs actifs
     const activePlayers = getActivePlayers(players);
 
+    // Vérifier s'il reste suffisamment de joueurs pour continuer
     if (activePlayers.length <= 1) {
       setGameOver(true);
       if (activePlayers.length === 1) {
@@ -298,18 +459,45 @@ const App = () => {
       return;
     }
 
-    const nextIndex = getNextPlayerIndex(currentPlayerIndex, players);
+    // Trouver le prochain joueur non éliminé pour commencer la manche
+    let nextIndex = getNextPlayerIndex(currentPlayerIndex, players);
+    while (players[nextIndex].eliminated) {
+      nextIndex = getNextPlayerIndex(nextIndex, players);
+    }
 
+    // Mettre à jour l'index du joueur courant
     setCurrentPlayerIndex(nextIndex);
+
+    // Réinitialiser le nombre de joueurs passés
     setPassedPlayers(0);
 
+    // Réinitialiser l'état de sélection de carte
+    setIsCardSelected(false);
+
+    // Réinitialiser la carte tirée
+    setDrawnCard(null);
+
+    // Mettre à jour l'état des joueurs
+    const updatedPlayers = players.map((player) => ({
+      ...player,
+      turnsPlayed: 0,
+      bet: 0,
+      hand: { sand: null, blood: null },
+    }));
+
+    // Réinitialiser le jeu
     initializeGame(
-      players,
+      updatedPlayers,
       setPlayers,
       setDeck,
       setPassedPlayers,
       setCurrentTurn,
       setCurrentPlayerIndex
+    );
+
+    console.log(
+      "Nouvelle manche commencée. Joueur actif :",
+      players[nextIndex].name
     );
   };
 

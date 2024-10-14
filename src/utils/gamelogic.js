@@ -42,6 +42,11 @@ export const initializeGame = (
   setPassedPlayers(0);
   setCurrentTurn(1);
   setCurrentPlayerIndex(0);
+
+  console.log(
+    "Fin de initializeGame :",
+    updatedPlayers.map((p) => `${p.name}: ${p.tokens} jetons, mise ${p.bet}`)
+  );
 };
 
 export const applyImpostor = (player, cardType) => {
