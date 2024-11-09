@@ -29,3 +29,35 @@
     flex-direction: column;
   }
 }
+
+.game-board {
+  width: 100%;
+  padding: 1vh;
+  margin: 1vh 0;
+  max-height: 25vh;
+}
+
+.deck-piles {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1vw;
+  height: 100%;
+}
+
+.deck-pile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.deck-pile h4 {
+  font-size: min(1.2vw, 1rem);
+  margin-bottom: 0.5vh;
+}
+
+.deck-pile img {
+  height: 15vh;
+  width: auto;
+  object-fit: contain;
+}

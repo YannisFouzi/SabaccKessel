@@ -1,481 +1,494 @@
 /* Background.css */
 
-html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    overflow: auto;
-  }
-  
-  body {
-    background: linear-gradient(#4f78ae, #87cbca, #c5cbb9);
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+}
+
+body.loaded {
+  opacity: 1;
+}
+
+/* Background gradients */
+#background-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: -1; /* Assure que le background reste en arrière-plan */
+}
+
+#sky {
+  position: absolute;
+  background: transparent;
+  top: 0;
+  height: calc(100vh - 20vw);
+  width: 100vw;
+  z-index: 1;
+}
+
+#stars {
+  background: #0d133a;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+#stafield {
+  position: absolute;
+  opacity: 0;
+  width: 150%;
+  height: 150%;
+  transform-origin: center center;
+  animation: stars_animation 120s linear infinite;
+}
+
+@keyframes stars_animation {
+  0% {
     opacity: 0;
-    transition: all 3s ease;
+    transform: rotate(0deg);
   }
-  
-  body.loaded {
-    opacity: 1;
+  10% {
+    opacity: 0.1;
   }
-  
-  /* Background gradients */
-  #background-container {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: -1; /* Assure que le background reste en arrière-plan */
+  20% {
+    opacity: 0.5;
   }
-  
-  #sky {
-    position: absolute;
-    background: transparent;
-    top: 0;
-    height: calc(100vh - 20vw);
-    width: 100vw;
-    z-index: 1;
+  30% {
+    opacity: 0.5;
   }
-  
-  #stars {
-    background: #0d133a;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
+  40% {
+    opacity: 0.4;
   }
-  
-  #stafield {
-    position: absolute;
+  50% {
     opacity: 0;
-    width: 150%;
-    height: 150%;
-    transform-origin: center center;
-    animation: stars_animation 120s linear infinite;
+    transform: rotate(180deg);
   }
-  
-  @keyframes stars_animation {
-    0% {
-      opacity: 0;
-      transform: rotate(0deg);
-    }
-    10% {
-      opacity: 0.1;
-    }
-    20% {
-      opacity: 0.5;
-    }
-    30% {
-      opacity: 0.5;
-    }
-    40% {
-      opacity: 0.4;
-    }
-    50% {
-      opacity: 0;
-      transform: rotate(180deg);
-    }
-    60% {
-      opacity: 0;
-    }
-    70% {
-      opacity: 0;
-    }
-    80% {
-      opacity: 0;
-    }
-    90% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 0;
-      transform: rotate(360deg);
-    }
+  60% {
+    opacity: 0;
   }
-  
-  .lightning {
-    position: absolute;
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
-    z-index: 2;
+  70% {
+    opacity: 0;
   }
-  
-  .sun, .tatoo1, .tatoo2 {
-    width: 100%;
-    position: absolute;
+  80% {
+    opacity: 0;
   }
-  
-  .tatoo1 {
-    left: -10%;
-    top: 100%;
+  90% {
+    opacity: 0;
   }
-  
-  .tatoo1 div {
-    border-radius: 3.5vw;
+  100% {
+    opacity: 0;
+    transform: rotate(360deg);
+  }
+}
+
+.lightning {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  z-index: 2;
+}
+
+.sun,
+.tatoo1,
+.tatoo2 {
+  width: 100%;
+  position: absolute;
+}
+
+.tatoo1 {
+  left: -10%;
+  top: 100%;
+}
+
+.tatoo1 div {
+  border-radius: 3.5vw;
+  width: 5.25vw;
+  height: 5.25vw;
+  position: relative;
+  background: linear-gradient(
+    -5deg,
+    #ffffff,
+    #f9fedb,
+    #e5bd41,
+    #da731f,
+    #d95229
+  );
+  background-size: 100% 500%;
+  animation: tatoo1_transition 60s ease infinite;
+}
+
+@keyframes tatoo1_transition {
+  0% {
+    background-position: 0% 100%;
     width: 5.25vw;
     height: 5.25vw;
-    position: relative;
-    background: linear-gradient(-5deg, #ffffff, #f9fedb, #e5bd41, #da731f, #d95229);
-    background-size: 100% 500%;
-    animation: tatoo1_transition 60s ease infinite;
+    filter: blur(2px);
   }
-  
-  @keyframes tatoo1_transition {
-    0% {
-      background-position: 0% 100%;
-      width: 5.25vw;
-      height: 5.25vw;
-      filter: blur(2px);
-    }
-    5% {
-      background-position: 0% 80%;
-      width: 5.95vw;
-      height: 5.95vw;
-      filter: blur(1px);
-    }
-    14% {
-      background-position: 0% 0%;
-      width: 7vw;
-      height: 7vw;
-      filter: blur(1px);
-    }
-    20% {
-      background-position: 0% 0%;
-      width: 7vw;
-      height: 7vw;
-      filter: blur(1px);
-    }
-    50% {
-      background-position: 0% 70%;
-      width: 7vw;
-      height: 7vw;
-      filter: blur(1px);
-    }
-    60% {
-      background-position: 0% 70%;
-      width: 3.5vw;
-      height: 3.5vw;
-      filter: blur(3px);
-    }
-    100% {
-      background-position: 0% 100%;
-      width: 5.25vw;
-      height: 5.25vw;
-      filter: blur(2px);
-    }
+  5% {
+    background-position: 0% 80%;
+    width: 5.95vw;
+    height: 5.95vw;
+    filter: blur(1px);
   }
-  
-  .tatoo2 {
-    left: 3vw;
-    top: 12vw;
+  14% {
+    background-position: 0% 0%;
+    width: 7vw;
+    height: 7vw;
+    filter: blur(1px);
   }
-  
-  .tatoo2 div {
-    position: relative;
-    border-radius: 2.5vw;
+  20% {
+    background-position: 0% 0%;
+    width: 7vw;
+    height: 7vw;
+    filter: blur(1px);
+  }
+  50% {
+    background-position: 0% 70%;
+    width: 7vw;
+    height: 7vw;
+    filter: blur(1px);
+  }
+  60% {
+    background-position: 0% 70%;
+    width: 3.5vw;
+    height: 3.5vw;
+    filter: blur(3px);
+  }
+  100% {
+    background-position: 0% 100%;
+    width: 5.25vw;
+    height: 5.25vw;
+    filter: blur(2px);
+  }
+}
+
+.tatoo2 {
+  left: 3vw;
+  top: 12vw;
+}
+
+.tatoo2 div {
+  position: relative;
+  border-radius: 2.5vw;
+  width: 3.75vw;
+  height: 3.75vw;
+  background: linear-gradient(-5deg, #ffffff, #f9fedb, #e5bd41, #d97829);
+  background-size: 100% 300%;
+  animation: tatoo2_transition 60s ease infinite;
+}
+
+@keyframes tatoo2_transition {
+  0% {
+    background-position: 0% 100%;
     width: 3.75vw;
     height: 3.75vw;
-    background: linear-gradient(-5deg, #ffffff, #f9fedb, #e5bd41, #d97829);
-    background-size: 100% 300%;
-    animation: tatoo2_transition 60s ease infinite;
-  }
-  
-  @keyframes tatoo2_transition {
-    0% {
-      background-position: 0% 100%;
-      width: 3.75vw;
-      height: 3.75vw;
-      filter: blur(2px);
-    }
-    4% {
-      background-position: 0% 95%;
-      width: 4.25vw;
-      height: 4.25vw;
-    }
-    8% {
-      background-position: 0% 80%;
-      filter: blur(1px);
-    }
-    14% {
-      background-position: 0% 50%;
-      width: 5vw;
-      height: 5vw;
-      filter: blur(1px);
-    }
-    20% {
-      background-position: 0% 0%;
-      width: 5vw;
-      height: 5vw;
-    }
-    50% {
-      background-position: 0% 70%;
-      width: 5vw;
-      height: 5vw;
-      filter: blur(2px);
-    }
-    60% {
-      background-position: 0% 70%;
-      width: 2.5vw;
-      height: 2.5vw;
-      filter: blur(3px);
-    }
-    100% {
-      background-position: 0% 100%;
-      width: 3.75vw;
-      height: 3.75vw;
-      filter: blur(2px);
-    }
-  }
-  
-  .suncrane {
-    background: transparent;
-    position: absolute;
-    width: 65%;
-    height: 2%;
-    top: calc(100vh - 20vw);
-    left: 0;
-    right: 0;
-    margin: auto;
-    animation: suncrane_animation 60s linear infinite;
-  }
-  
-  @keyframes suncrane_animation {
-    0% {
-      transform: rotate(135deg);
-    }
-    100% {
-      transform: rotate(495deg);
-    }
-  }
-  
-  .landscape_element, #mountains, #landscape, #house, #crates, #luke, #sandcrawler, #tuskens {
-    position: absolute;
-    height: auto;
-    z-index: 7;
-  }
-  
-  .landscape_animatable, #mountains, #landscape, #house, #crates {
-    animation: landscape_animation 60s linear infinite;
-  }
-  
-  .shadow_element {
-    position: absolute;
-    height: auto;
-    width: 100vw;
-    left: 0;
-    bottom: 0;
     filter: blur(2px);
-    z-index: 5;
   }
-  
-  #mountains {
-    width: 100vw;
-    left: 0;
-    top: calc(100vh - 25vw);
-    z-index: 3;
+  4% {
+    background-position: 0% 95%;
+    width: 4.25vw;
+    height: 4.25vw;
   }
-  
-  #landscape {
-    width: 100vw;
-    left: 0;
-    bottom: 0;
-    z-index: 4;
+  8% {
+    background-position: 0% 80%;
+    filter: blur(1px);
   }
-  
-  @keyframes landscape_animation {
-    0% {
-      filter: brightness(85%);
-    }
-    10% {
-      filter: brightness(85%);
-    }
-    20% {
-      filter: brightness(60%);
-    }
-    30% {
-      filter: brightness(30%);
-    }
-    40% {
-      filter: brightness(30%);
-    }
-    50% {
-      filter: brightness(45%);
-    }
-    60% {
-      filter: brightness(60%);
-    }
-    70% {
-      filter: brightness(75%);
-    }
-    80% {
-      filter: brightness(95%);
-    }
-    90% {
-      filter: brightness(90%);
-    }
-    100% {
-      filter: brightness(85%);
-    }
+  14% {
+    background-position: 0% 50%;
+    width: 5vw;
+    height: 5vw;
+    filter: blur(1px);
   }
-  
-  #house {
-    width: 50vw;
-    left: 0;
-    bottom: 3vw;
-    z-index: 7;
+  20% {
+    background-position: 0% 0%;
+    width: 5vw;
+    height: 5vw;
   }
-  
-  #crates {
-    width: 14.75vw;
-    left: 74vw;
-    bottom: 9.5vw;
+  50% {
+    background-position: 0% 70%;
+    width: 5vw;
+    height: 5vw;
+    filter: blur(2px);
   }
-  
-  #luke {
-    width: 8vw;
-    left: 50vw;
-    bottom: 14vw;
-    animation: luke_animation 60s linear infinite;
+  60% {
+    background-position: 0% 70%;
+    width: 2.5vw;
+    height: 2.5vw;
+    filter: blur(3px);
   }
-  
-  @keyframes luke_animation {
-    0% {
-      opacity: 0;
-    }
-    5% {
-      opacity: 0;
-    }
-    10% {
-      opacity: 1;
-    }
-    15% {
-      opacity: 1;
-    }
-    22% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 0;
-    }
+  100% {
+    background-position: 0% 100%;
+    width: 3.75vw;
+    height: 3.75vw;
+    filter: blur(2px);
   }
-  
-  #sandcrawler {
-    width: 1.25vw;
-    left: 35%;
-    bottom: 22.7vw;
-    z-index: 6;
-    transform: rotateY(180deg);
-    animation: sandcrawler_animation 120s linear infinite;
-  }
-  
-  @keyframes sandcrawler_animation {
-    0% {
-      left: 35%;
-    }
-    5% {
-      left: 25%;
-      transform: rotateY(180deg);
-    }
-    25% {
-      left: 25%;
-      transform: rotateY(0deg);
-    }
-    50% {
-      left: 100%;
-      transform: rotateY(0deg);
-    }
-    75% {
-      left: 100%;
-      transform: rotateY(180deg);
-    }
-    100% {
-      left: 35%;
-    }
-  }
-  
-  #tuskens {
-    width: 4.75vw;
-    left: 85vw;
-    bottom: 17.7vw;
-    z-index: 6;
-    animation: tuskens_animation 60s linear infinite;
-  }
-  
-  @keyframes tuskens_animation {
-    0% {
-      opacity: 0;
-    }
-    5% {
-      opacity: 0;
-    }
-    25% {
-      opacity: 0;
-    }
-    30% {
-      opacity: 1;
-    }
-    35% {
-      opacity: 1;
-    }
-    40% {
-      opacity: 0;
-    }
-    100% {
-      opacity: 0;
-    }
-  }
-  
-  footer {
-    position: absolute;
-    z-index: 8;
-    width: 100vw;
-    height: auto;
-    bottom: 0;
-    color: #b0926b;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    filter: none;
-  }
-  
-  footer div {
-    font-size: 1rem;
-    line-height: 2rem;
-  }
-  
-  @media (max-width: 991.98px) {
-    footer div {
-      font-size: 0.75rem;
-      line-height: 1.5rem;
-    }
-  }
-  
-  @media (max-width: 767.98px) {
-    footer div {
-      font-size: 0.5rem;
-      line-height: 1rem;
-    }
-  }
-  
-  @media (max-width: 499.98px) {
-    footer div {
-      font-size: 0.5rem;
-      line-height: 1rem;
-    }
-  }
-  
-  footer a {
-    color: #b0926b;
-    z-index: 8;
-  }
+}
 
-  @media (max-width: 768px) {
-    body {
-      opacity: 1 !important; /* Désactiver l'animation sur mobile */
-      transition: none !important; /* Supprime la transition pour une application immédiate */
-    }
+.suncrane {
+  background: transparent;
+  position: absolute;
+  width: 65%;
+  height: 2%;
+  top: calc(100vh - 20vw);
+  left: 0;
+  right: 0;
+  margin: auto;
+  animation: suncrane_animation 60s linear infinite;
+}
+
+@keyframes suncrane_animation {
+  0% {
+    transform: rotate(135deg);
   }
-  
-  
+  100% {
+    transform: rotate(495deg);
+  }
+}
+
+.landscape_element,
+#mountains,
+#landscape,
+#house,
+#crates,
+#luke,
+#sandcrawler,
+#tuskens {
+  position: absolute;
+  height: auto;
+  z-index: 7;
+}
+
+.landscape_animatable,
+#mountains,
+#landscape,
+#house,
+#crates {
+  animation: landscape_animation 60s linear infinite;
+}
+
+.shadow_element {
+  position: absolute;
+  height: auto;
+  width: 100vw;
+  left: 0;
+  bottom: 0;
+  filter: blur(2px);
+  z-index: 5;
+}
+
+#mountains {
+  width: 100vw;
+  left: 0;
+  top: calc(100vh - 25vw);
+  z-index: 3;
+}
+
+#landscape {
+  width: 100vw;
+  left: 0;
+  bottom: 0;
+  z-index: 4;
+}
+
+@keyframes landscape_animation {
+  0% {
+    filter: brightness(85%);
+  }
+  10% {
+    filter: brightness(85%);
+  }
+  20% {
+    filter: brightness(60%);
+  }
+  30% {
+    filter: brightness(30%);
+  }
+  40% {
+    filter: brightness(30%);
+  }
+  50% {
+    filter: brightness(45%);
+  }
+  60% {
+    filter: brightness(60%);
+  }
+  70% {
+    filter: brightness(75%);
+  }
+  80% {
+    filter: brightness(95%);
+  }
+  90% {
+    filter: brightness(90%);
+  }
+  100% {
+    filter: brightness(85%);
+  }
+}
+
+#house {
+  width: 50vw;
+  left: 0;
+  bottom: 3vw;
+  z-index: 7;
+}
+
+#crates {
+  width: 14.75vw;
+  left: 74vw;
+  bottom: 9.5vw;
+}
+
+#luke {
+  width: 8vw;
+  left: 50vw;
+  bottom: 14vw;
+  animation: luke_animation 60s linear infinite;
+}
+
+@keyframes luke_animation {
+  0% {
+    opacity: 0;
+  }
+  5% {
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  15% {
+    opacity: 1;
+  }
+  22% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+#sandcrawler {
+  width: 1.25vw;
+  left: 35%;
+  bottom: 22.7vw;
+  z-index: 6;
+  transform: rotateY(180deg);
+  animation: sandcrawler_animation 120s linear infinite;
+}
+
+@keyframes sandcrawler_animation {
+  0% {
+    left: 35%;
+  }
+  5% {
+    left: 25%;
+    transform: rotateY(180deg);
+  }
+  25% {
+    left: 25%;
+    transform: rotateY(0deg);
+  }
+  50% {
+    left: 100%;
+    transform: rotateY(0deg);
+  }
+  75% {
+    left: 100%;
+    transform: rotateY(180deg);
+  }
+  100% {
+    left: 35%;
+  }
+}
+
+#tuskens {
+  width: 4.75vw;
+  left: 85vw;
+  bottom: 17.7vw;
+  z-index: 6;
+  animation: tuskens_animation 60s linear infinite;
+}
+
+@keyframes tuskens_animation {
+  0% {
+    opacity: 0;
+  }
+  5% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  35% {
+    opacity: 1;
+  }
+  40% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+footer {
+  position: absolute;
+  z-index: 8;
+  width: 100vw;
+  height: auto;
+  bottom: 0;
+  color: #b0926b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: none;
+}
+
+footer div {
+  font-size: 1rem;
+  line-height: 2rem;
+}
+
+@media (max-width: 991.98px) {
+  footer div {
+    font-size: 0.75rem;
+    line-height: 1.5rem;
+  }
+}
+
+@media (max-width: 767.98px) {
+  footer div {
+    font-size: 0.5rem;
+    line-height: 1rem;
+  }
+}
+
+@media (max-width: 499.98px) {
+  footer div {
+    font-size: 0.5rem;
+    line-height: 1rem;
+  }
+}
+
+footer a {
+  color: #b0926b;
+  z-index: 8;
+}
+
+@media (max-width: 768px) {
+  body {
+    opacity: 1 !important; /* Désactiver l'animation sur mobile */
+    transition: none !important; /* Supprime la transition pour une application immédiate */
+  }
+}

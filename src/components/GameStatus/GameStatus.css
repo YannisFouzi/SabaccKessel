@@ -13,3 +13,16 @@
   margin-bottom: 20px;
   text-align: center;
 }
+
+.game-status {
+  padding: 1vh;
+  margin: 1vh 0;
+}
+
+.game-status h2 {
+  font-size: min(2.5vw, 1.8rem);
+}
+
+.game-status h3 {
+  font-size: min(2vw, 1.5rem);
+}

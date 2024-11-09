@@ -3,6 +3,7 @@ import Background from "../components/Background/Background";
 import GameBoard from "../components/GameBoard/GameBoard";
 import GameStatus from "../components/GameStatus/GameStatus";
 import PlayerHand from "../components/PlayerHand/PlayerHand";
+import ResponsiveLayout from "../components/ResponsiveLayout";
 import RulesModal from "../components/RulesModal/RulesModal";
 import { applyImpostor, initializeGame } from "../utils/gamelogic";
 import {
@@ -560,36 +561,38 @@ const App = () => {
     );
   }
   return (
-    <div className="App">
-      <Background />
-      <h1>Sabacc de Kessel</h1>
-      <button
-        className="rules-button"
-        onClick={() => setIsRulesModalOpen(true)}
-      >
-        Règles du jeu
-      </button>
-      <GameStatus round={round} turn={currentTurn} />
-      <GameBoard
-        deck={deck}
-        drawCard={(pileType) => drawCard(pileType, currentPlayerIndex)}
-        isCardSelected={isCardSelected}
-        setDrawnCard={setDrawnCard}
-        setIsCardSelected={setIsCardSelected}
-      />
-      <div className="players-container">{renderPlayers()}</div>
-      <RulesModal
-        isOpen={isRulesModalOpen}
-        onClose={() => setIsRulesModalOpen(false)}
-      />
-      <ImpostorChoiceModal
-        isOpen={isImpostorModalOpen}
-        onClose={() => setIsImpostorModalOpen(false)}
-        playerName={impostorChoice ? impostorChoice.player.name : ""}
-        diceRolls={impostorChoice ? impostorChoice.diceRolls : []}
-        onChoice={impostorChoice ? impostorChoice.onChoice : () => {}}
-      />
-    </div>
+    <ResponsiveLayout>
+      <div className="App">
+        <Background />
+        <h1>Sabacc de Kessel</h1>
+        <button
+          className="rules-button"
+          onClick={() => setIsRulesModalOpen(true)}
+        >
+          Règles du jeu
+        </button>
+        <GameStatus round={round} turn={currentTurn} />
+        <GameBoard
+          deck={deck}
+          drawCard={(pileType) => drawCard(pileType, currentPlayerIndex)}
+          isCardSelected={isCardSelected}
+          setDrawnCard={setDrawnCard}
+          setIsCardSelected={setIsCardSelected}
+        />
+        <div className="players-container">{renderPlayers()}</div>
+        <RulesModal
+          isOpen={isRulesModalOpen}
+          onClose={() => setIsRulesModalOpen(false)}
+        />
+        <ImpostorChoiceModal
+          isOpen={isImpostorModalOpen}
+          onClose={() => setIsImpostorModalOpen(false)}
+          playerName={impostorChoice ? impostorChoice.player.name : ""}
+          diceRolls={impostorChoice ? impostorChoice.diceRolls : []}
+          onChoice={impostorChoice ? impostorChoice.onChoice : () => {}}
+        />
+      </div>
+    </ResponsiveLayout>
   );
 };
 

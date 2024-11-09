@@ -79,3 +79,33 @@
     transition: all 0.3s ease;
   }
 }
+
+.player-hand {
+  height: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1vh;
+}
+
+.player-hand .cards {
+  display: flex;
+  gap: 1vw;
+  justify-content: center;
+  align-items: center;
+}
+
+.player-hand .cards img {
+  height: 12vh;
+  width: auto;
+  object-fit: contain;
+}
+
+.player-hand h3 {
+  font-size: min(1.5vw, 1.2rem);
+  margin-bottom: 0.5vh;
+}
+
+.player-hand p {
+  font-size: min(1.2vw, 1rem);
+}

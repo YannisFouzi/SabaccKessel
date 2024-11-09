@@ -40,3 +40,43 @@
   height: auto;
   display: block;
 }
+
+.card {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card img {
+  height: 12vh;
+  width: auto;
+  object-fit: contain;
+}
+
+@media (max-width: 768px) {
+  .other-players {
+    grid-template-columns: 1fr;
+  }
+
+  .deck-piles {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .deck-pile h4 {
+    font-size: min(3vw, 0.9rem);
+  }
+
+  .player-hand h3 {
+    font-size: min(4vw, 1rem);
+  }
+
+  .player-hand p {
+    font-size: min(3.5vw, 0.9rem);
+  }
+
+  .deck-pile img,
+  .card img {
+    height: 10vh;
+  }
+}
