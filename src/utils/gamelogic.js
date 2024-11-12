@@ -28,14 +28,17 @@ export const initializeGame = (
 
   const updatedPlayers = players.map((player) => ({
     ...player,
-    hand: {
-      sand: sandInvisible.pop(),
-      blood: bloodInvisible.pop(),
-    },
+    hand: player.eliminated
+      ? { sand: null, blood: null }
+      : {
+          sand: sandInvisible.pop(),
+          blood: bloodInvisible.pop(),
+        },
     turnsPlayed: 0,
     sabacc: false,
     bet: 0,
-    eliminated: false,
+    lastActionWasPass: false,
+    // Retirer la ligne eliminated: false pour garder l'état d'élimination
   }));
 
   setPlayers(updatedPlayers);

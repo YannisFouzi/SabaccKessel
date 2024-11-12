@@ -50,7 +50,7 @@ export const updatePlayerHand = (player, newHand) => {
 export const placePlayerBet = (player, betAmount) => {
   return {
     ...player,
-    tokens: player.tokens - betAmount,
+    tokens: Math.max(0, player.tokens - betAmount), // Permet de descendre à zéro sans éliminer
     bet: player.bet + betAmount,
   };
 };
@@ -70,7 +70,7 @@ export const resetPlayerForNewRound = (player, newHand) => {
 };
 
 export const getActivePlayers = (players) => {
-  return players.filter((player) => !player.eliminated && player.tokens > 0);
+  return players.filter((player) => !player.eliminated);
 };
 
 export const getNextPlayerIndex = (currentIndex, players) => {
